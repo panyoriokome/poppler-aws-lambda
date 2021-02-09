@@ -1,0 +1,40 @@
+service: Sample
+
+resources:
+  Description: サンプル
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  serviceName: annual-report-data
+  pythonRequirements:
+    dockerizePip: non-linux
+  prune:
+    automatic: true
+    number: 3
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: ap-northeast-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    TZ: Asia/Tokyo
+  memorySize: 128
+  timeout: 30
+
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+
+package:
+  individually: true
+
+functions:
+  conversionPdfToTxt:
+    handler: handler.convert
+    module: functions
+    description: S3に格納されたpdfファイルをtxtファイルに変換する
+    memorySize: 128
+    timeout: 180
+    # layers: arn:aws:lambda:ap-northeast-1:455176667242:layer:poppler:2
+    layers: ${cf:Layers-${self:custom.stage}.PopplerLambdaLayerQualifiedArn}
