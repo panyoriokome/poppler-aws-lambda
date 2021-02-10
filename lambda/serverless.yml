@@ -36,5 +36,4 @@ functions:
     description: S3に格納されたpdfファイルをtxtファイルに変換する
     memorySize: 128
     timeout: 180
-    # layers: arn:aws:lambda:ap-northeast-1:455176667242:layer:poppler:2
     layers: ${cf:Layers-${self:custom.stage}.PopplerLambdaLayerQualifiedArn}
